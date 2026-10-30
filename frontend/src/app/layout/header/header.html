@@ -1,0 +1,61 @@
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" routerLink="/" (click)="closeMenu()" [attr.aria-label]="lang.t('brand.name')">
+      <span class="brand-mark" aria-hidden="true">Y</span>
+      <span class="brand-copy">
+        <strong>{{ lang.t('brand.name') }}</strong>
+        <small>{{ lang.t('brand.short') }}</small>
+      </span>
+    </a>
+
+    <button
+      type="button"
+      class="menu-toggle"
+      [attr.aria-expanded]="menuOpen()"
+      [attr.aria-label]="menuOpen() ? lang.t('common.closeMenu') : lang.t('common.openMenu')"
+      (click)="toggleMenu()"
+    >
+      @if (menuOpen()) {
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      } @else {
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      }
+    </button>
+
+    <nav class="primary-nav" [class.open]="menuOpen()" [attr.aria-label]="lang.t('common.mainNavigation')">
+      @for (link of navLinks(); track link.path) {
+        <a
+          [routerLink]="link.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+          (click)="closeMenu()"
+        >
+          {{ link.label }}
+        </a>
+      }
+
+      <div class="language-switch" role="group" [attr.aria-label]="lang.t('common.language')">
+        <button
+          type="button"
+          [class.active]="lang.language() === 'en'"
+          [attr.aria-pressed]="lang.language() === 'en'"
+          (click)="setLanguage('en')"
+        >
+          EN
+        </button>
+        <button
+          type="button"
+          [class.active]="lang.language() === 'sw'"
+          [attr.aria-pressed]="lang.language() === 'sw'"
+          (click)="setLanguage('sw')"
+        >
+          SW
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,44 @@
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand brand--footer" routerLink="/">
+        <span class="brand-mark" aria-hidden="true">Y</span>
+        <span class="brand-copy">
+          <strong>{{ lang.t('brand.name') }}</strong>
+          <small>{{ lang.t('brand.tagline') }}</small>
+        </span>
+      </a>
+      <p>{{ lang.t('footer.about') }}</p>
+    </div>
+
+    <div class="footer-column">
+      <h2>{{ lang.t('footer.quickLinks') }}</h2>
+      <a routerLink="/">{{ lang.t('nav.home') }}</a>
+      <a routerLink="/products">{{ lang.t('nav.products') }}</a>
+      <a routerLink="/about">{{ lang.t('nav.about') }}</a>
+      <a routerLink="/contact">{{ lang.t('nav.contact') }}</a>
+    </div>
+
+    <div class="footer-column">
+      <h2>{{ lang.t('footer.divisions') }}</h2>
+      @for (division of divisions(); track division.search) {
+        <a routerLink="/products" [queryParams]="{ search: division.search }">
+          {{ division.label }}
+        </a>
+      }
+    </div>
+
+    <div class="footer-column footer-contact">
+      <h2>{{ lang.t('footer.contact') }}</h2>
+      <a [href]="'mailto:' + site.email">{{ site.email }}</a>
+      <a [href]="'tel:' + site.phoneHref">{{ site.phone }}</a>
+      <span>{{ site.address }}</span>
+      <span>{{ lang.t('contact.hours.value') }}</span>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>{{ lang.t('footer.rights', { year: year }) }}</p>
+    <p>{{ lang.t('footer.language') }}</p>
+  </div>
+</footer>

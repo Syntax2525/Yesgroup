@@ -1,0 +1,164 @@
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow eyebrow--light">{{ lang.t('home.hero.eyebrow') }}</span>
+      <h1>{{ lang.t('home.hero.title') }}</h1>
+      <p class="hero-lead">{{ lang.t('home.hero.subtitle') }}</p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" routerLink="/products">
+          {{ lang.t('home.hero.primary') }}
+          <span aria-hidden="true">→</span>
+        </a>
+        <a class="btn btn-ghost" routerLink="/contact">{{ lang.t('home.hero.secondary') }}</a>
+      </div>
+
+      <dl class="hero-stats">
+        <div>
+          <dt>{{ lang.t('home.stats.divisions') }}</dt>
+          <dd>{{ lang.t('home.stats.divisionsValue') }}</dd>
+        </div>
+        <div>
+          <dt>{{ lang.t('home.stats.local') }}</dt>
+          <dd>{{ lang.t('home.stats.localValue') }}</dd>
+        </div>
+        <div>
+          <dt>{{ lang.t('home.stats.languages') }}</dt>
+          <dd>{{ lang.t('home.stats.languagesValue') }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <aside class="hero-panel">
+      <div class="hero-panel-head">
+        <span>{{ lang.t('home.hero.cardLabel') }}</span>
+        <strong>{{ lang.t('home.hero.cardTitle') }}</strong>
+      </div>
+
+      <ul class="hero-divisions">
+        @for (division of divisions(); track division.number) {
+          <li>
+            <a routerLink="/products" [queryParams]="{ search: division.search }">
+              <span class="hero-division-number">{{ division.number }}</span>
+              <span class="hero-division-title">{{ division.title }}</span>
+              <span class="hero-division-arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        }
+      </ul>
+
+      <p class="hero-panel-foot">{{ lang.t('brand.tagline') }}</p>
+    </aside>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-copy">
+        <span class="eyebrow">{{ lang.t('home.divisions.eyebrow') }}</span>
+        <h2>{{ lang.t('home.divisions.title') }}</h2>
+        <p class="section-subtitle">{{ lang.t('home.divisions.subtitle') }}</p>
+      </div>
+    </div>
+
+    <div class="division-grid">
+      @for (division of divisions(); track division.number) {
+        <article class="division-card">
+          <span class="division-number">{{ division.number }}</span>
+          <h3>{{ division.title }}</h3>
+          <p>{{ division.description }}</p>
+          <a class="text-link" routerLink="/products" [queryParams]="{ search: division.search }">
+            {{ lang.t('common.viewProducts') }}
+            <span aria-hidden="true">→</span>
+          </a>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section section--muted">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-copy">
+        <span class="eyebrow">{{ lang.t('home.featured.eyebrow') }}</span>
+        <h2>{{ lang.t('home.featured.title') }}</h2>
+        <p class="section-subtitle">{{ lang.t('home.featured.subtitle') }}</p>
+      </div>
+
+      <a class="text-link section-head-action" routerLink="/products">
+        {{ lang.t('common.viewProducts') }}
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    @if (loading()) {
+      <div class="card-grid" aria-busy="true">
+        @for (item of [1, 2, 3]; track item) {
+          <div class="skeleton-card">
+            <div class="skeleton skeleton-media"></div>
+            <div class="skeleton skeleton-line"></div>
+            <div class="skeleton skeleton-line skeleton-line--short"></div>
+          </div>
+        }
+      </div>
+    } @else if (error()) {
+      <div class="notice notice--error">
+        <p>{{ lang.t('home.featured.error') }}</p>
+        <button type="button" class="btn btn-secondary btn-small" (click)="loadFeatured()">
+          {{ lang.t('common.retry') }}
+        </button>
+      </div>
+    } @else if (products().length === 0) {
+      <div class="notice">
+        <p>{{ lang.t('home.featured.empty') }}</p>
+        <a class="btn btn-secondary btn-small" routerLink="/contact">
+          {{ lang.t('common.contactUs') }}
+        </a>
+      </div>
+    } @else {
+      <div class="card-grid">
+        @for (product of products(); track product.id) {
+          <app-product-card [product]="product" />
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-copy">
+        <span class="eyebrow">{{ lang.t('home.why.eyebrow') }}</span>
+        <h2>{{ lang.t('home.why.title') }}</h2>
+        <p class="section-subtitle">{{ lang.t('home.why.subtitle') }}</p>
+      </div>
+    </div>
+
+    <div class="reason-grid">
+      @for (reason of reasons(); track reason.title; let index = $index) {
+        <article class="reason-card">
+          <span class="reason-number">{{ index + 1 }}</span>
+          <h3>{{ reason.title }}</h3>
+          <p>{{ reason.description }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="container cta-band-inner">
+    <div>
+      <span class="eyebrow eyebrow--light">{{ lang.t('home.cta.eyebrow') }}</span>
+      <h2>{{ lang.t('home.cta.title') }}</h2>
+      <p>{{ lang.t('home.cta.subtitle') }}</p>
+    </div>
+    <a class="btn btn-primary" routerLink="/contact">
+      {{ lang.t('home.cta.button') }}
+      <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>

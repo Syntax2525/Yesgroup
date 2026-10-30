@@ -1,0 +1,160 @@
+<section class="page-hero page-hero--compact">
+  <div class="container">
+    <nav class="breadcrumbs" [attr.aria-label]="lang.t('common.breadcrumb')">
+      <a routerLink="/">{{ lang.t('common.home') }}</a>
+      <span aria-hidden="true">/</span>
+      <a routerLink="/products">{{ lang.t('nav.products') }}</a>
+      @if (product(); as item) {
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{{ lang.productName(item) }}</span>
+      }
+    </nav>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    @if (loading()) {
+      <div class="product-detail" aria-busy="true">
+        <div class="skeleton skeleton-detail-media"></div>
+        <div class="product-detail-info">
+          <div class="skeleton skeleton-line skeleton-line--short"></div>
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-line"></div>
+          <div class="skeleton skeleton-line"></div>
+          <div class="skeleton skeleton-line skeleton-line--short"></div>
+        </div>
+      </div>
+    } @else if (notFound()) {
+      <div class="notice notice--empty">
+        <span class="notice-icon" aria-hidden="true">◎</span>
+        <h1>{{ lang.t('product.notFound.title') }}</h1>
+        <p>{{ lang.t('product.notFound.text') }}</p>
+        <a class="btn btn-primary btn-small" routerLink="/products">
+          {{ lang.t('common.backToProducts') }}
+        </a>
+      </div>
+    } @else if (error()) {
+      <div class="notice notice--error">
+        <h1>{{ lang.t('product.error.title') }}</h1>
+        <p>{{ lang.t('product.error.text') }}</p>
+        <div class="notice-actions">
+          <button type="button" class="btn btn-secondary btn-small" (click)="retry()">
+            {{ lang.t('common.retry') }}
+          </button>
+          <a class="btn btn-ghost btn-small" routerLink="/products">
+            {{ lang.t('common.backToProducts') }}
+          </a>
+        </div>
+      </div>
+    } @else if (product(); as item) {
+      <div class="product-detail">
+        <div class="product-detail-media">
+          @if (item.image && !imageFailed()) {
+            <img
+              [src]="item.image"
+              [alt]="lang.t('product.imageAlt', { name: name() })"
+              (error)="imageFailed.set(true)"
+            />
+          } @else {
+            <span class="product-media-fallback" aria-hidden="true">
+              <span>{{ name().charAt(0) }}</span>
+            </span>
+          }
+
+          <span class="status-pill" [class]="'status-pill ' + statusClass()">
+            {{ lang.statusLabel(item.status) }}
+          </span>
+        </div>
+
+        <div class="product-detail-info">
+          @if (categoryName()) {
+            <a
+              class="product-category"
+              routerLink="/products"
+              [queryParams]="{ category: item.categoryId }"
+            >
+              {{ categoryName() }}
+            </a>
+          }
+
+          <h1>{{ name() }}</h1>
+
+          <p class="product-detail-price">
+            <strong>{{ lang.formatPrice(item.price) }}</strong>
+            <span>/ {{ item.unit }}</span>
+          </p>
+
+          <p class="product-detail-description">
+            {{ description() || lang.t('product.noDescription') }}
+          </p>
+
+          <dl class="detail-grid">
+            <div>
+              <dt>{{ lang.t('product.unit') }}</dt>
+              <dd>{{ item.unit }}</dd>
+            </div>
+            <div>
+              <dt>{{ lang.t('product.stock') }}</dt>
+              <dd>{{ lang.t('product.stockValue', { count: item.stockQuantity }) }}</dd>
+            </div>
+            <div>
+              <dt>{{ lang.t('product.status') }}</dt>
+              <dd>{{ lang.statusLabel(item.status) }}</dd>
+            </div>
+            <div>
+              <dt>{{ lang.t('product.price') }}</dt>
+              <dd>{{ lang.formatPrice(item.price) }}</dd>
+            </div>
+          </dl>
+
+          <p class="stock-note" [class.stock-note--out]="!inStock()">
+            {{ inStock() ? lang.t('product.inStock') : lang.t('product.outOfStock') }}
+          </p>
+
+          <div class="product-detail-actions">
+            <a
+              class="btn btn-primary"
+              routerLink="/contact"
+              [queryParams]="{ subject: name() }"
+            >
+              {{ lang.t('common.contactUs') }}
+              <span aria-hidden="true">→</span>
+            </a>
+            <a class="btn btn-ghost" routerLink="/products">
+              {{ lang.t('common.backToProducts') }}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="assurance-strip">
+        <div>
+          <strong>{{ lang.t('product.contactCta.title') }}</strong>
+          <span>{{ lang.t('product.contactCta.text') }}</span>
+        </div>
+        <a
+          class="text-link"
+          routerLink="/contact"
+          [queryParams]="{ subject: name() }"
+        >
+          {{ lang.t('product.contactCta.button') }}
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      @if (related().length > 0) {
+        <section class="related-section">
+          <div class="section-head">
+            <h2>{{ lang.t('product.related') }}</h2>
+          </div>
+          <div class="card-grid">
+            @for (relatedProduct of related(); track relatedProduct.id) {
+              <app-product-card [product]="relatedProduct" />
+            }
+          </div>
+        </section>
+      }
+    }
+  </div>
+</section>

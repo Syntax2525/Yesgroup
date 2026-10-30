@@ -1,0 +1,50 @@
+<article class="product-card">
+  <a
+    class="product-card-media"
+    [routerLink]="['/products', product().id]"
+    [attr.aria-label]="name()"
+  >
+    @if (product().image && !imageFailed()) {
+      <img
+        [src]="product().image ?? ''"
+        [alt]="lang.t('product.imageAlt', { name: name() })"
+        loading="lazy"
+        (error)="imageFailed.set(true)"
+      />
+    } @else {
+      <span class="product-media-fallback" aria-hidden="true">
+        <span>{{ name().charAt(0) }}</span>
+      </span>
+    }
+
+    <span [class]="'status-pill ' + statusClass()">
+      {{ lang.statusLabel(product().status) }}
+    </span>
+  </a>
+
+  <div class="product-card-body">
+    @if (categoryName()) {
+      <span class="product-category">{{ categoryName() }}</span>
+    }
+
+    <h3>
+      <a [routerLink]="['/products', product().id]">{{ name() }}</a>
+    </h3>
+
+    @if (description()) {
+      <p class="product-card-description">{{ description() }}</p>
+    }
+
+    <div class="product-card-footer">
+      <div class="product-price">
+        <strong>{{ lang.formatPrice(product().price) }}</strong>
+        <span>/ {{ product().unit }}</span>
+      </div>
+
+      <a class="text-link" [routerLink]="['/products', product().id]">
+        {{ lang.t('common.viewDetails') }}
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</article>

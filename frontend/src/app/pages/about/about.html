@@ -1,0 +1,85 @@
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumbs" [attr.aria-label]="lang.t('common.breadcrumb')">
+      <a routerLink="/">{{ lang.t('common.home') }}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ lang.t('nav.about') }}</span>
+    </nav>
+
+    <span class="eyebrow eyebrow--light">{{ lang.t('about.eyebrow') }}</span>
+    <h1>{{ lang.t('about.title') }}</h1>
+    <p class="page-hero-lead">{{ lang.t('about.subtitle') }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container about-story">
+    <div class="about-story-main">
+      <span class="eyebrow">{{ lang.t('about.eyebrow') }}</span>
+      <h2>{{ lang.t('about.story.title') }}</h2>
+      <p class="lead-text">{{ lang.t('about.story.p1') }}</p>
+      <p>{{ lang.t('about.story.p2') }}</p>
+
+      <ul class="about-divisions">
+        @for (division of divisions(); track division) {
+          <li>
+            <span aria-hidden="true">✓</span>
+            {{ division }}
+          </li>
+        }
+      </ul>
+    </div>
+
+    <aside class="about-aside">
+      <div class="about-aside-card">
+        <span class="about-aside-number">4</span>
+        <h3>{{ lang.t('home.stats.divisions') }}</h3>
+        <p>{{ lang.t('home.divisions.subtitle') }}</p>
+      </div>
+
+      <div class="about-aside-card about-aside-card--accent">
+        <h3>{{ lang.t('about.mission.title') }}</h3>
+        <p>{{ lang.t('about.mission.text') }}</p>
+      </div>
+
+      <div class="about-aside-card">
+        <h3>{{ lang.t('about.vision.title') }}</h3>
+        <p>{{ lang.t('about.vision.text') }}</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="section section--muted">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-head-copy">
+        <span class="eyebrow">{{ lang.t('about.values.title') }}</span>
+        <h2>{{ lang.t('about.values.title') }}</h2>
+      </div>
+    </div>
+
+    <div class="reason-grid">
+      @for (value of values(); track value.title; let index = $index) {
+        <article class="reason-card">
+          <span class="reason-number">{{ index + 1 }}</span>
+          <h3>{{ value.title }}</h3>
+          <p>{{ value.description }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="container cta-band-inner">
+    <div>
+      <h2>{{ lang.t('about.cta.title') }}</h2>
+      <p>{{ lang.t('about.cta.text') }}</p>
+    </div>
+    <a class="btn btn-primary" routerLink="/contact">
+      {{ lang.t('common.contactUs') }}
+      <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>

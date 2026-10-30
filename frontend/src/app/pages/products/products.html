@@ -1,0 +1,176 @@
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumbs" [attr.aria-label]="lang.t('common.breadcrumb')">
+      <a routerLink="/">{{ lang.t('common.home') }}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ lang.t('nav.products') }}</span>
+    </nav>
+
+    <span class="eyebrow eyebrow--light">{{ lang.t('products.eyebrow') }}</span>
+    <h1>{{ lang.t('products.title') }}</h1>
+    <p class="page-hero-lead">{{ lang.t('products.subtitle') }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <form class="filter-panel" role="search" [attr.aria-label]="lang.t('products.filtersLabel')">
+      <div class="filter-search">
+        <label class="filter-label" for="product-search">{{ lang.t('common.search') }}</label>
+        <div class="search-field">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M20 20l-3.5-3.5" />
+          </svg>
+          <input
+            id="product-search"
+            type="search"
+            name="search"
+            autocomplete="off"
+            [value]="search()"
+            [placeholder]="lang.t('products.searchPlaceholder')"
+            (input)="onSearchInput($event)"
+          />
+        </div>
+      </div>
+
+      <div class="filter-field">
+        <label class="filter-label" for="product-category">
+          {{ lang.t('products.filterCategory') }}
+        </label>
+        <select id="product-category" name="category" (change)="onCategoryChange($event)">
+          <option value="" [selected]="categoryId() === null">
+            {{ lang.t('common.allCategories') }}
+          </option>
+          @for (category of categories(); track category.id) {
+            <option [value]="category.id" [selected]="categoryId() === category.id">
+              {{ lang.categoryName(category) }}
+            </option>
+          }
+        </select>
+        @if (categoriesError()) {
+          <span class="filter-hint">{{ lang.t('errors.categories') }}</span>
+        }
+      </div>
+
+      <div class="filter-field">
+        <label class="filter-label" for="product-status">
+          {{ lang.t('products.filterStatus') }}
+        </label>
+        <select id="product-status" name="status" (change)="onStatusChange($event)">
+          <option value="" [selected]="status() === ''">
+            {{ lang.t('common.allStatuses') }}
+          </option>
+          <option value="ACTIVE" [selected]="status() === 'ACTIVE'">
+            {{ lang.statusLabel('ACTIVE') }}
+          </option>
+          <option value="INACTIVE" [selected]="status() === 'INACTIVE'">
+            {{ lang.statusLabel('INACTIVE') }}
+          </option>
+          <option value="OUT_OF_STOCK" [selected]="status() === 'OUT_OF_STOCK'">
+            {{ lang.statusLabel('OUT_OF_STOCK') }}
+          </option>
+        </select>
+      </div>
+
+      @if (hasActiveFilters()) {
+        <button type="button" class="btn btn-secondary btn-small filter-clear" (click)="clearFilters()">
+          {{ lang.t('common.clearFilters') }}
+        </button>
+      }
+    </form>
+
+    <div class="results-bar">
+      <p class="results-count" aria-live="polite">
+        @if (!loading() && !error()) {
+          {{ resultLabel() }}
+        } @else {
+          &nbsp;
+        }
+      </p>
+
+      @if (totalPages() > 1) {
+        <p class="results-page">
+          {{ lang.t('products.pageInfo', { page: page(), pages: totalPages() }) }}
+        </p>
+      }
+    </div>
+
+    @if (loading()) {
+      <div class="card-grid" aria-busy="true">
+        @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+          <div class="skeleton-card">
+            <div class="skeleton skeleton-media"></div>
+            <div class="skeleton skeleton-line"></div>
+            <div class="skeleton skeleton-line skeleton-line--short"></div>
+          </div>
+        }
+      </div>
+    } @else if (error()) {
+      <div class="notice notice--error">
+        <h2>{{ lang.t('products.error.title') }}</h2>
+        <p>{{ lang.t('products.error.text') }}</p>
+        <button type="button" class="btn btn-secondary btn-small" (click)="retry()">
+          {{ lang.t('common.retry') }}
+        </button>
+      </div>
+    } @else if (products().length === 0) {
+      <div class="notice notice--empty">
+        <span class="notice-icon" aria-hidden="true">◎</span>
+        <h2>{{ lang.t('products.empty.title') }}</h2>
+        <p>{{ lang.t('products.empty.text') }}</p>
+        @if (hasActiveFilters()) {
+          <button type="button" class="btn btn-primary btn-small" (click)="clearFilters()">
+            {{ lang.t('common.clearFilters') }}
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="card-grid">
+        @for (product of products(); track product.id) {
+          <app-product-card [product]="product" />
+        }
+      </div>
+
+      @if (totalPages() > 1) {
+        <nav class="pagination" [attr.aria-label]="lang.t('common.page')">
+          <button
+            type="button"
+            class="pagination-button pagination-arrow"
+            [disabled]="!hasPreviousPage()"
+            (click)="goToPage(page() - 1)"
+          >
+            <span aria-hidden="true">←</span>
+            <span class="pagination-arrow-label">{{ lang.t('common.previous') }}</span>
+          </button>
+
+          @for (pageNumber of pageNumbers(); track $index) {
+            @if (pageNumber === -1) {
+              <span class="pagination-ellipsis" aria-hidden="true">…</span>
+            } @else {
+              <button
+                type="button"
+                class="pagination-button"
+                [class.active]="pageNumber === page()"
+                [attr.aria-current]="pageNumber === page() ? 'page' : null"
+                (click)="goToPage(pageNumber)"
+              >
+                {{ pageNumber }}
+              </button>
+            }
+          }
+
+          <button
+            type="button"
+            class="pagination-button pagination-arrow"
+            [disabled]="!hasNextPage()"
+            (click)="goToPage(page() + 1)"
+          >
+            <span class="pagination-arrow-label">{{ lang.t('common.next') }}</span>
+            <span aria-hidden="true">→</span>
+          </button>
+        </nav>
+      }
+    }
+  </div>
+</section>

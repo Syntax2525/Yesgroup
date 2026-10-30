@@ -1,0 +1,171 @@
+<section class="page-hero">
+  <div class="container">
+    <nav class="breadcrumbs" [attr.aria-label]="lang.t('common.breadcrumb')">
+      <a routerLink="/">{{ lang.t('common.home') }}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ lang.t('nav.contact') }}</span>
+    </nav>
+
+    <span class="eyebrow eyebrow--light">{{ lang.t('contact.eyebrow') }}</span>
+    <h1>{{ lang.t('contact.title') }}</h1>
+    <p class="page-hero-lead">{{ lang.t('contact.subtitle') }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container contact-grid">
+    <aside class="contact-info">
+      <h2>{{ lang.t('contact.info.title') }}</h2>
+
+      <ul class="contact-list">
+        <li>
+          <span class="contact-icon" aria-hidden="true">@</span>
+          <div>
+            <span class="contact-label">{{ lang.t('common.email') }}</span>
+            <a [href]="'mailto:' + site.email">{{ site.email }}</a>
+          </div>
+        </li>
+        <li>
+          <span class="contact-icon" aria-hidden="true">☎</span>
+          <div>
+            <span class="contact-label">{{ lang.t('common.phone') }}</span>
+            <a [href]="'tel:' + site.phoneHref">{{ site.phone }}</a>
+          </div>
+        </li>
+        <li>
+          <span class="contact-icon" aria-hidden="true">⌖</span>
+          <div>
+            <span class="contact-label">{{ lang.t('common.address') }}</span>
+            <span>{{ site.address }}</span>
+          </div>
+        </li>
+        <li>
+          <span class="contact-icon" aria-hidden="true">◷</span>
+          <div>
+            <span class="contact-label">{{ lang.t('common.hours') }}</span>
+            <span>{{ lang.t('contact.hours.value') }}</span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="contact-note">
+        <p>{{ lang.t('footer.about') }}</p>
+        <a class="text-link" routerLink="/products">
+          {{ lang.t('common.viewProducts') }}
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </aside>
+
+    <div class="contact-form-card">
+      <h2>{{ lang.t('contact.form.title') }}</h2>
+      <p class="form-intro">{{ lang.t('contact.form.intro') }}</p>
+
+      @if (submitted()) {
+        <div class="alert alert--success" role="status">
+          {{ lang.t('contact.form.success', { email: site.email }) }}
+        </div>
+      }
+
+      <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)" novalidate>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="contact-name">
+              {{ lang.t('contact.form.name') }}
+              <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="contact-name"
+              name="name"
+              type="text"
+              autocomplete="name"
+              [(ngModel)]="model.name"
+              #nameField="ngModel"
+              required
+              [placeholder]="lang.t('contact.form.placeholder.name')"
+            />
+            @if (nameField.invalid && nameField.touched) {
+              <span class="field-error">{{ lang.t('common.required') }}</span>
+            }
+          </div>
+
+          <div class="form-field">
+            <label for="contact-email">
+              {{ lang.t('contact.form.email') }}
+              <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input
+              id="contact-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              [(ngModel)]="model.email"
+              #emailField="ngModel"
+              required
+              email
+              [placeholder]="lang.t('contact.form.placeholder.email')"
+            />
+            @if (emailField.invalid && emailField.touched) {
+              <span class="field-error">
+                {{
+                  emailField.errors?.['required']
+                    ? lang.t('common.required')
+                    : lang.t('contact.form.invalidEmail')
+                }}
+              </span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="contact-phone">{{ lang.t('contact.form.phone') }}</label>
+            <input
+              id="contact-phone"
+              name="phone"
+              type="tel"
+              autocomplete="tel"
+              [(ngModel)]="model.phone"
+              [placeholder]="lang.t('contact.form.placeholder.phone')"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="contact-subject">{{ lang.t('contact.form.subject') }}</label>
+            <input
+              id="contact-subject"
+              name="subject"
+              type="text"
+              [(ngModel)]="model.subject"
+              [placeholder]="lang.t('contact.form.placeholder.subject')"
+            />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="contact-message">
+            {{ lang.t('contact.form.message') }}
+            <span class="required-mark" aria-hidden="true">*</span>
+          </label>
+          <textarea
+            id="contact-message"
+            name="message"
+            rows="6"
+            [(ngModel)]="model.message"
+            #messageField="ngModel"
+            required
+            [placeholder]="lang.t('contact.form.placeholder.message')"
+          ></textarea>
+          @if (messageField.invalid && messageField.touched) {
+            <span class="field-error">{{ lang.t('common.required') }}</span>
+          }
+        </div>
+
+        <button type="submit" class="btn btn-primary form-submit">
+          {{ lang.t('contact.form.send') }}
+          <span aria-hidden="true">→</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
